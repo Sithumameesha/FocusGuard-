@@ -54,9 +54,24 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if ('serviceWorker' in navigator && window.location.protocol === 'https:' || window.location.hostname === 'localhost') {
-                window.addEventListener('load', () => {
-                  navigator.serviceWorker.register('/sw.js').catch(() => {});
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  if (window.location.protocol === 'https:' && window.location.hostname !== 'localhost') {
+                    navigator.serviceWorker.register('/sw.js').catch(function() {});
+                  } else if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    navigator.serviceWorker.getRegistrations().then(function(regs) {
+                      for (var i = 0; i < regs.length; i++) {
+                        regs[i].unregister();
+                      }
+                    });
+                    if ('caches' in window) {
+                      caches.keys().then(function(keys) {
+                        for (var j = 0; j < keys.length; j++) {
+                          caches.delete(keys[j]);
+                        }
+                      });
+                    }
+                  }
                 });
               }
             `,

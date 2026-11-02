@@ -13,10 +13,22 @@ import { DailySpendCard } from '@/components/DailySpendCard';
 import { FocusQueue } from '@/components/FocusQueue';
 import { SalarySetup } from '@/components/SalarySetup';
 import { ActivityHistory } from '@/components/ActivityHistory';
+import { AiSalaryAdvisor } from '@/components/AiSalaryAdvisor';
 import { LogExpenseModal } from '@/components/LogExpenseModal';
 import { SettingsModal } from '@/components/SettingsModal';
 
-import { Utensils, Fuel, ShoppingCart, Receipt, Package, PlusCircle, ArrowRight, Target } from 'lucide-react';
+import { 
+  Utensils, 
+  Fuel, 
+  ShoppingCart, 
+  Receipt, 
+  Package, 
+  PlusCircle, 
+  ArrowRight, 
+  Target, 
+  Bot, 
+  Sparkles 
+} from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('guardrails');
@@ -148,6 +160,30 @@ export default function Home() {
                 hasBudget={Boolean(budget)}
               />
 
+              {/* AI Advisor Quick Callout Card */}
+              <div
+                onClick={() => setActiveTab('advisor')}
+                className="p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/30 border border-cyan-500/30 flex items-center justify-between gap-3 cursor-pointer hover:border-cyan-500/50 transition active:scale-98 shadow-lg shadow-cyan-950/20"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0">
+                    <Bot className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" />
+                      <span>AI Salary Advisor</span>
+                    </div>
+                    <div className="text-xs font-semibold text-white truncate">
+                      {budget 
+                        ? 'Get strategic triage & anti-drain recommendations' 
+                        : 'Unsure how to plan your 10,000 salary? Ask AI'}
+                    </div>
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-cyan-400 shrink-0" />
+              </div>
+
               {/* Quick Focus Task Teaser */}
               {hasActiveTask ? (
                 <div 
@@ -253,7 +289,20 @@ export default function Home() {
             </div>
           )}
 
-          {/* TAB 3: Salary Setup (Day 1 Monthly Division) */}
+          {/* TAB 3: Guardrail AI Salary Advisor */}
+          {activeTab === 'advisor' && (
+            <div className="animate-in fade-in duration-200">
+              <AiSalaryAdvisor
+                currentBudget={budget}
+                analysis={analysis}
+                currencySymbol={currencySymbol}
+                onNavigateToGuardrails={() => setActiveTab('guardrails')}
+                onNavigateToSalary={() => setActiveTab('salary')}
+              />
+            </div>
+          )}
+
+          {/* TAB 4: Salary Setup (Day 1 Monthly Division) */}
           {activeTab === 'salary' && (
             <div className="animate-in fade-in duration-200">
               <SalarySetup
@@ -265,7 +314,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* TAB 4: Activity & History */}
+          {/* TAB 5: Activity & History */}
           {activeTab === 'history' && (
             <div className="animate-in fade-in duration-200">
               <ActivityHistory
